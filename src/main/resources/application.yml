@@ -1,0 +1,25 @@
+server:
+  port: 9092
+spring:
+  kafka:
+    bootstrap-servers: 192.168.66.6:9092,192.168.66.7:9092,192.168.66.8:9092
+    consumer:
+      groupId: myGroup
+      keyDeserializer: org.apache.kafka.common.serialization.StringDeserializer
+      valueDserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      groupId: myGroup
+      keyDeserializer: org.apache.kafka.common.serialization.StringSerializer
+      valueDserializer: org.apache.kafka.common.serialization.StringSerializer
+kafka:
+  topics:
+    - name: topic11
+      num-partitions: 3
+      replication-factor: 1
+    - name: topic21
+      num-partitions: 1
+      replication-factor: 1
+    - name: topic31
+      num-partitions: 2
+      replication-factor: 1
+
