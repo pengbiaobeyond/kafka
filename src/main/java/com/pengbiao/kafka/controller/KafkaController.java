@@ -8,6 +8,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
+import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.util.concurrent.ListenableFutureCallback;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -42,6 +45,28 @@ public class KafkaController {
         kafkaTemplate.send("topic11", data);
 
     }
+
+    /**
+     * 有回调---confirm机制
+     * @param msg
+     */
+    public void kafkaProducer(String msg) {
+        // TODO Auto-generated method stub
+        ListenableFuture<SendResult<String, String>> listen = kafkaTemplate.send(/*config.getTopic()*/"", msg);
+//        logger.info("sendTopic: "+config.getTopic());
+        listen.addCallback(new ListenableFutureCallback<SendResult<String, String>>(
+        ) {
+            @Override
+            public void onSuccess(SendResult<String, String> result) {
+                // TODO Auto-generated method stub
+//                logger.infof("发送底层Kafka消息{}成功!", msg);
+            }
+            @Override
+            public void onFailure(Throwable ex) {
+                /*logger.errorf("发送底层Kafka消息{}失败!", ex.getMessage());*/
+            }
+        });
+    }
     // test 主题 1 my_test 3
 
     @RequestMapping("/kafka")
@@ -57,17 +82,17 @@ public class KafkaController {
     public String getOrderKafka() {
         String orderId = System.currentTimeMillis() + "";
 ////        // 发送insertmsg
-        sendMsg(getSqlMsg("insert", orderId));
-        // 发送Updatemsg
-        sendMsg(getSqlMsg("update", orderId));
-        // 发送deletemsg
-        sendMsg(getSqlMsg("delete", orderId));
-//        // 发送insertmsg
-//        send(orderId, getSqlMsg("insert", orderId));
+//        sendMsg(getSqlMsg("insert", orderId));
 //        // 发送Updatemsg
-//        send(orderId, getSqlMsg("update", orderId));
+//        sendMsg(getSqlMsg("update", orderId));
 //        // 发送deletemsg
-//        send(orderId, getSqlMsg("delete", orderId));
+//        sendMsg(getSqlMsg("delete", orderId));
+//        // 发送insertmsg
+        send(orderId, getSqlMsg("insert", orderId));
+        // 发送Updatemsg
+        send(orderId, getSqlMsg("update", orderId));
+        // 发送deletemsg
+        send(orderId, getSqlMsg("delete", orderId));
         return "success";
     }
 
