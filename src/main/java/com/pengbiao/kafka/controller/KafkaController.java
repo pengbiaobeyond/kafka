@@ -14,9 +14,7 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * @author 余胜军
- */
+
 @RestController
 @SpringBootApplication
 @EnableKafka
@@ -81,13 +79,14 @@ public class KafkaController {
     @RequestMapping("/getOrderKafka")
     public String getOrderKafka() {
         String orderId = System.currentTimeMillis() + "";
-////        // 发送insertmsg
+
+//        无序
 //        sendMsg(getSqlMsg("insert", orderId));
 //        // 发送Updatemsg
 //        sendMsg(getSqlMsg("update", orderId));
 //        // 发送deletemsg
 //        sendMsg(getSqlMsg("delete", orderId));
-//        // 发送insertmsg
+//        有序
         send(orderId, getSqlMsg("insert", orderId));
         // 发送Updatemsg
         send(orderId, getSqlMsg("update", orderId));
